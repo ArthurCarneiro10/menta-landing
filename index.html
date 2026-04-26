@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menta — Seu dinheiro, no piloto automático</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body { font-family: 'Plus Jakarta Sans', sans-serif; }
+      .hero-clip { clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+      @media (min-width: 1024px) {
+        .hero-clip { clip-path: polygon(0 0, 100% 0, 100% 75%, 0 95%); }
+      }
+      .stripe-gradient {
+        background: linear-gradient(135deg, #042220 0%, #064e3b 25%, #065f46 50%, #047857 75%, #03241F 100%);
+        background-size: 300% 300%;
+        animation: stripe-flow 20s ease infinite;
+      }
+      @keyframes stripe-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      .diagonal-beam {
+        position: absolute; width: 200%; height: 100%;
+        background: radial-gradient(ellipse at center, rgba(79, 224, 176, 0.18) 0%, rgba(16, 185, 129, 0) 70%);
+        top: 0; left: -50%;
+        transform: rotate(-35deg) translateY(0);
+        animation: beam-drift 15s infinite alternate ease-in-out;
+        pointer-events: none; mix-blend-mode: screen;
+      }
+      @keyframes beam-drift {
+        0% { transform: rotate(-35deg) translateY(0) translateX(0); opacity: 0.5; }
+        100% { transform: rotate(-35deg) translateY(-10%) translateX(10%); opacity: 1; }
+      }
+      .floating-blob { animation: float-blob 20s infinite linear; }
+      @keyframes float-blob {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(30px, -50px) rotate(120deg); }
+        66% { transform: translate(-20px, 20px) rotate(240deg); }
+        100% { transform: translate(0, 0) rotate(360deg); }
+      }
+      .preserve-3d { transform-style: preserve-3d; }
+      .perspective-2000 { perspective: 2000px; }
+      .beam-path { stroke-dasharray: 100, 800; stroke-dashoffset: 900; animation: beam-flow 4s linear infinite; filter: drop-shadow(0 0 3px rgba(79,224,176,0.8)); }
+      .beam-path-fast { stroke-dasharray: 80, 600; stroke-dashoffset: 680; animation: beam-flow 3s linear infinite; filter: drop-shadow(0 0 3px rgba(79,224,176,0.8)); }
+      @keyframes beam-flow { to { stroke-dashoffset: 0; } }
+      .bento-card { transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; }
+      .bento-card:hover { transform: translateY(-4px); box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05); border-color: rgba(16,185,129,0.3); }
+      .bento-icon-bg { transition: background-color 0.3s ease, color 0.3s ease; }
+      .bento-card:hover .bento-icon-bg { background-color: #ecfdf5; color: #059669; }
+      .bg-dots { background-image: radial-gradient(rgba(79, 224, 176, 0.22) 1px, transparent 1px); background-size: 24px 24px; }
+      @keyframes marquee-ltr {
+        0% { transform: translateX(-50%); }
+        100% { transform: translateX(0); }
+      }
+      .animate-marquee { animation: marquee-ltr 60s linear infinite; }
+      @keyframes lock-pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.1); }
+      }
+      .lock-glow { animation: lock-pulse 3s infinite; }
+      .menu-open { overflow: hidden; }
+      /* Tabular nums for money */
+      .tabular { font-variant-numeric: tabular-nums; }
+    </style>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ["'Plus Jakarta Sans'", 'sans-serif'] }
+          }
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-stone-50 text-slate-900 antialiased overflow-x-hidden selection:bg-emerald-500/30">
+
+    <!-- =========================
+         HEADER / NAV
+    ==========================-->
+    <nav class="z-50 px-4 lg:px-12 flex text-white/90 w-full pt-4 lg:pt-6 pb-6 absolute top-0 left-0 items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-2 relative z-50">
+        <svg width="34" height="34" viewBox="0 0 100 100" class="block">
+          <defs>
+            <linearGradient id="logo-mint" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#9CF0CD"/>
+              <stop offset="55%" stop-color="#4FE0B0"/>
+              <stop offset="100%" stop-color="#1F8E70"/>
+            </linearGradient>
+          </defs>
+          <path d="M14 84 V34 Q14 14 32 14 Q50 14 50 34 V84" fill="none" stroke="url(#logo-mint)" stroke-width="13" stroke-linecap="round"/>
+          <path d="M50 84 V34 Q50 14 68 14 Q86 14 86 34 V84" fill="none" stroke="url(#logo-mint)" stroke-width="13" stroke-linecap="round" opacity="0.92"/>
+          <path d="M20 72 L38 54 L52 64 L78 32" fill="none" stroke="#ffffff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M66 32 L78 32 L78 44" fill="none" stroke="#ffffff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="text-lg font-bold text-white tracking-tight">Menta</span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <div class="hidden lg:flex items-center gap-8 text-sm font-medium">
+        <a href="#como-funciona" class="hover:text-emerald-200 transition-colors text-white/70">Como funciona</a>
+        <a href="#recursos" class="hover:text-emerald-200 transition-colors text-white/70">Recursos</a>
+        <a href="#precos" class="hover:text-emerald-200 transition-colors text-white/70">Preços</a>
+        <a href="#seguranca" class="hover:text-emerald-200 transition-colors text-white/70">Segurança</a>
+      </div>
+
+      <!-- Desktop CTA -->
+      <div class="hidden lg:flex items-center gap-4">
+        <a href="#" class="text-sm font-medium hover:text-emerald-200 text-white/70">Entrar</a>
+        <button class="bg-white text-emerald-950 px-4 py-2 rounded-full text-sm font-semibold transition-all hover:bg-gray-100 flex items-center gap-1.5 group">
+          Começar grátis
+          <iconify-icon icon="lucide:arrow-right" width="16" class="group-hover:translate-x-0.5 transition-transform"></iconify-icon>
+        </button>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button id="mobile-menu-btn" class="lg:hidden flex items-center justify-center text-white/90 hover:text-white p-2 transition-colors relative z-50">
+        <iconify-icon icon="lucide:menu" width="24" stroke-width="1.5"></iconify-icon>
+      </button>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-stone-50 flex-col h-[100dvh] w-screen">
+        <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-stone-200 rounded-full"></div>
+        <div class="flex items-center justify-between px-6 pt-6 pb-2">
+          <div class="flex items-center gap-2">
+            <svg width="28" height="28" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="logo-mint-m" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#9CF0CD"/><stop offset="55%" stop-color="#4FE0B0"/><stop offset="100%" stop-color="#1F8E70"/>
+                </linearGradient>
+              </defs>
+              <path d="M14 84 V34 Q14 14 32 14 Q50 14 50 34 V84" fill="none" stroke="url(#logo-mint-m)" stroke-width="13" stroke-linecap="round"/>
+              <path d="M50 84 V34 Q50 14 68 14 Q86 14 86 34 V84" fill="none" stroke="url(#logo-mint-m)" stroke-width="13" stroke-linecap="round" opacity="0.92"/>
+              <path d="M20 72 L38 54 L52 64 L78 32" fill="none" stroke="#0a0f2a" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M66 32 L78 32 L78 44" fill="none" stroke="#0a0f2a" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="text-lg font-bold text-slate-900 tracking-tight">Menta</span>
+          </div>
+          <button id="close-menu-btn" class="flex items-center justify-center text-slate-400 hover:text-slate-900 p-2 transition-colors rounded-full hover:bg-slate-100">
+            <iconify-icon icon="lucide:x" width="28" stroke-width="1.5"></iconify-icon>
+          </button>
+        </div>
+        <div class="flex-1 flex flex-col justify-center px-6 gap-6 sm:gap-8">
+          <a href="#topo" class="text-5xl font-bold text-slate-900 tracking-tight hover:text-emerald-600 transition-colors mobile-link">Início</a>
+          <a href="#como-funciona" class="text-5xl font-bold text-slate-900 tracking-tight hover:text-emerald-600 transition-colors mobile-link">Como funciona</a>
+          <a href="#recursos" class="text-5xl font-bold text-slate-900 tracking-tight hover:text-emerald-600 transition-colors mobile-link">Recursos</a>
+          <a href="#precos" class="text-5xl font-bold text-slate-900 tracking-tight hover:text-emerald-600 transition-colors mobile-link">Preços</a>
+          <a href="#seguranca" class="text-5xl font-bold text-slate-900 tracking-tight hover:text-emerald-600 transition-colors mobile-link">Segurança</a>
+        </div>
+        <div class="p-6 pb-10 flex flex-col gap-4">
+          <button class="w-full py-4 rounded-full border border-slate-200 text-slate-900 font-semibold text-lg hover:bg-slate-100 transition-colors">Entrar</button>
+          <button class="w-full py-4 rounded-full bg-slate-900 text-white font-semibold text-lg flex items-center justify-center gap-2 hover:bg-emerald-600 transition-colors shadow-lg">
+            Começar grátis
+            <iconify-icon icon="lucide:arrow-right" width="20"></iconify-icon>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- =========================
+         HERO
+    ==========================-->
+    <main id="topo" class="w-full relative">
+      <div class="absolute top-0 left-0 w-full h-[100vh] md:h-[110vh] lg:h-[135vh] bg-[#03241F] hero-clip -z-10 overflow-hidden">
+        <div class="absolute inset-0 w-full h-full stripe-gradient opacity-80"></div>
+        <div class="diagonal-beam blur-3xl"></div>
+        <div class="diagonal-beam blur-[80px]" style="animation-delay: -5s; opacity: 0.6; transform: rotate(-35deg) translateY(20%);"></div>
+        <div class="absolute top-0 left-[20%] w-[500px] h-[500px] bg-emerald-500/20 rounded-full blur-[100px] mix-blend-screen floating-blob"></div>
+        <div class="absolute bottom-[20%] right-[-10%] w-[600px] h-[600px] bg-teal-600/20 rounded-full blur-[120px] mix-blend-overlay" style="animation-direction: reverse;"></div>
+        <div class="absolute bottom-0 w-full h-40 bg-gradient-to-t from-[#03241F] to-transparent opacity-80"></div>
+      </div>
+
+      <div class="container lg:px-12 lg:pt-48 mr-auto ml-auto pt-24 pr-4 pb-20 pl-4 relative">
+        <div class="absolute inset-0 pointer-events-none hidden md:flex justify-between px-6 lg:px-12 max-w-7xl mx-auto opacity-10">
+          <div class="w-px h-full bg-white"></div>
+          <div class="w-px h-full bg-white hidden md:block"></div>
+          <div class="w-px h-full bg-white hidden lg:block"></div>
+          <div class="w-px h-full bg-white"></div>
+        </div>
+
+        <!-- Connecting beams (desktop) -->
+        <div class="absolute inset-0 pointer-events-none hidden lg:block z-0 overflow-visible">
+          <svg class="w-full h-full overflow-visible" viewBox="0 0 1200 800" preserveAspectRatio="none">
+            <path d="M 380 550 C 500 550, 600 300, 750 320" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"></path>
+            <path d="M 380 550 C 500 550, 600 300, 750 320" fill="none" stroke="#34d399" stroke-width="2" class="beam-path" stroke-linecap="round"></path>
+            <path d="M 450 550 C 550 550, 600 500, 700 520" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"></path>
+            <path d="M 450 550 C 550 550, 600 500, 700 520" fill="none" stroke="#10b981" stroke-width="2" class="beam-path-fast" stroke-linecap="round"></path>
+            <path d="M 520 550 C 600 550, 650 450, 750 450" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"></path>
+            <path d="M 520 550 C 600 550, 650 450, 750 450" fill="none" stroke="#6ee7b7" stroke-width="2" class="beam-path" style="animation-delay: 1s;" stroke-linecap="round"></path>
+          </svg>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-8 items-center relative z-10">
+          <!-- Left content -->
+          <div class="lg:col-span-5 flex flex-col h-full relative justify-center text-center lg:text-left pt-6 lg:pt-0">
+            <div class="absolute -left-4 top-0 text-white/10 text-xs font-mono hidden lg:block">01</div>
+
+            <span class="lg:-translate-y-16 inline-flex self-center lg:self-start items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 px-3 py-1 text-[11px] font-semibold text-emerald-200 mb-4 backdrop-blur">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Open Finance Brasil · IA financeira
+            </span>
+
+            <h1 class="leading-[1.05] text-4xl sm:text-5xl lg:text-7xl lg:-translate-y-16 font-semibold text-white tracking-tight mb-4 lg:mb-6 relative">
+              Seu dinheiro, no <span class="bg-gradient-to-r from-emerald-300 to-teal-200 bg-clip-text text-transparent">piloto automático</span>
+            </h1>
+            <p class="leading-relaxed text-base sm:text-lg lg:text-xl font-light text-emerald-50 max-w-lg lg:max-w-lg mx-auto lg:mx-0 mb-8 lg:mb-10 lg:-translate-y-16">
+              Conecta sua conta, organiza tudo sozinho com IA e te diz exatamente o que fazer com cada real — quanto economizar, quanto investir e quando.
+            </p>
+
+            <!-- Desktop email form -->
+            <div class="hidden sm:flex flex-col sm:flex-row sm:items-center lg:justify-start lg:-translate-y-16 w-full translate-x-12 gap-x-4 gap-y-4 items-center justify-center">
+              <form class="flex shadow-emerald-900/20 focus-within:ring-2 focus-within:ring-emerald-400/30 transition-all lg:scale-75 lg:origin-left lg:-translate-x-12 bg-emerald-50 w-full max-w-sm border-slate-100/10 border rounded-full p-1.5 shadow scale-100 items-center">
+                <input type="email" placeholder="seu@email.com" class="flex-1 border-none outline-none placeholder:text-slate-500 min-w-0 text-base font-medium text-slate-700 bg-transparent pt-3 pr-2 pb-3 pl-5" required />
+                <button type="submit" class="shrink-0 hover:bg-slate-800 transition-colors flex group text-base font-bold text-white bg-slate-900 rounded-full pt-3 pr-6 pb-3 pl-6 gap-x-1.5 items-center">
+                  Começar grátis
+                  <iconify-icon icon="lucide:chevron-right" width="16"></iconify-icon>
+                </button>
+              </form>
+            </div>
+
+            <!-- Mobile buttons -->
+            <div class="flex sm:hidden items-center justify-center gap-3 w-full mb-4">
+              <button class="bg-white text-emerald-950 px-6 py-3.5 rounded-full text-base font-bold shadow-lg hover:bg-gray-50 transition-colors w-full flex items-center justify-center">
+                Começar grátis
+              </button>
+            </div>
+            <div class="flex sm:hidden items-center justify-center gap-2 w-full text-emerald-100/80 text-xs mb-4">
+              <iconify-icon icon="lucide:check" width="12"></iconify-icon> 7 dias premium grátis
+              <span class="opacity-40">·</span>
+              <iconify-icon icon="lucide:check" width="12"></iconify-icon> Sem cartão
+            </div>
+
+            <!-- Trust bar -->
+            <div class="border-white/10 border-t mt-12 lg:mt-16 pt-8 relative">
+              <p class="text-[11px] uppercase tracking-widest text-white/40 mb-5 font-semibold">Conectamos com seu banco</p>
+              <div class="flex flex-wrap justify-center lg:justify-start hover:opacity-90 transition-all duration-500 opacity-70 gap-x-6 lg:gap-x-8 gap-y-4 items-center text-white text-xs font-bold">
+                <span class="flex items-center gap-1.5">
+                  <span class="w-7 h-7 rounded-md bg-orange-500 grid place-items-center text-[10px]">Itaú</span>
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-7 h-7 rounded-md bg-purple-700 grid place-items-center text-[9px]">Nu</span>
+                  Nubank
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-7 h-7 rounded-md bg-yellow-400 text-slate-900 grid place-items-center text-[10px]">B</span>
+                  Bradesco
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-7 h-7 rounded-md bg-red-600 grid place-items-center text-[10px]">Sa</span>
+                  Santander
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <span class="w-7 h-7 rounded-md bg-blue-500 grid place-items-center text-[10px]">C6</span>
+                </span>
+                <span class="text-white/50 text-xs font-medium">+ 40 bancos</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right visuals — desktop only -->
+          <div class="hidden lg:flex lg:col-span-7 relative perspective-2000 z-10 mt-2 lg:mt-0 items-center justify-center h-[300px] sm:h-[450px] lg:h-[700px]">
+            <div class="scale-[0.45] sm:scale-[0.65] md:scale-[0.8] lg:scale-100 w-full h-full relative flex items-center justify-center origin-top lg:origin-center">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-emerald-500/20 blur-[90px] -z-10 rounded-full pointer-events-none"></div>
+
+              <div class="transform transition-all duration-700 lg:[transform:rotateY(-10deg)_rotateX(6deg)_rotateZ(-3deg)] preserve-3d origin-center w-full h-full relative items-start flex justify-center">
+
+                <!-- ==== BROWSER: Menta Web Dashboard ==== -->
+                <div class="absolute top-[25%] lg:right-[-40px] shadow-2xl overflow-hidden bg-white w-[700px] h-[500px] z-10 border-white/40 border rounded-xl ring-black/5 ring-1 -translate-y-[45%] lg:translate-x-16">
+                  <div class="flex bg-slate-50/50 h-11 border-slate-100 border-b pr-4 pl-4 backdrop-blur-sm gap-x-2 items-center justify-between">
+                    <div class="flex gap-2">
+                      <div class="w-3 h-3 rounded-full bg-rose-400/80"></div>
+                      <div class="w-3 h-3 rounded-full bg-amber-400/80"></div>
+                      <div class="w-3 h-3 rounded-full bg-emerald-400/80"></div>
+                    </div>
+                    <div class="w-1/2 h-6 bg-white border border-slate-200/50 rounded flex items-center px-3 text-[10px] text-slate-400">menta.com.br/painel</div>
+                  </div>
+
+                  <div class="flex h-full bg-white">
+                    <div class="flex flex-col bg-slate-50/30 w-16 border-slate-100 border-r pt-6 pb-6 gap-y-6 items-center">
+                      <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 grid place-items-center">
+                        <svg width="18" height="18" viewBox="0 0 100 100">
+                          <path d="M14 84 V34 Q14 14 32 14 Q50 14 50 34 V84" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"/>
+                          <path d="M50 84 V34 Q50 14 68 14 Q86 14 86 34 V84" fill="none" stroke="currentColor" stroke-width="13" stroke-linecap="round"/>
+                        </svg>
+                      </div>
+                      <div class="flex flex-col gap-4">
+                        <div class="p-2 text-slate-400 rounded-md"><iconify-icon icon="solar:home-2-linear" width="20"></iconify-icon></div>
+                        <div class="p-2 text-slate-900 bg-white shadow-sm border border-slate-100 rounded-md"><iconify-icon icon="solar:graph-up-linear" width="20"></iconify-icon></div>
+                        <div class="p-2 text-slate-400 rounded-md"><iconify-icon icon="solar:wallet-linear" width="20"></iconify-icon></div>
+                        <div class="p-2 text-slate-400 rounded-md"><iconify-icon icon="solar:target-linear" width="20"></iconify-icon></div>
+                      </div>
+                    </div>
+
+                    <div class="flex-1 flex flex-col p-6">
+                      <div class="flex justify-between items-center mb-6">
+                        <div>
+                          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Saldo do mês · Abril</div>
+                          <div class="text-3xl font-bold text-slate-900 tracking-tight tabular">R$ 2.557,00</div>
+                          <div class="text-xs text-emerald-600 font-medium mt-1">+ R$ 1.280 disponível pra investir</div>
+                        </div>
+                        <div class="flex gap-2">
+                          <div class="px-3 py-1.5 rounded-md border border-slate-200 text-xs font-medium bg-white">Exportar</div>
+                          <div class="px-3 py-1.5 rounded-md bg-emerald-600 text-white text-xs font-medium">Investir agora</div>
+                        </div>
+                      </div>
+
+                      <!-- Chart -->
+                      <div class="relative w-full h-40 mb-5">
+                        <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-50">
+                          <div class="w-full h-px border-t border-dashed border-slate-200"></div>
+                          <div class="w-full h-px border-t border-dashed border-slate-200"></div>
+                          <div class="w-full h-px border-t border-dashed border-slate-200"></div>
+                          <div class="w-full h-px border-t border-dashed border-slate-200"></div>
+                        </div>
+                        <svg class="overflow-visible w-full h-full" preserveAspectRatio="none" viewBox="0 0 600 200">
+                          <defs>
+                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stop-color="#10b981" stop-opacity="0.18"></stop>
+                              <stop offset="100%" stop-color="#10b981" stop-opacity="0"></stop>
+                            </linearGradient>
+                          </defs>
+                          <path d="M0,150 C50,140 100,80 150,90 C200,100 250,50 300,60 C350,70 400,20 450,40 C500,60 550,10 600,30 V200 H0 Z" fill="url(#chartGradient)"></path>
+                          <path d="M0,150 C50,140 100,80 150,90 C200,100 250,50 300,60 C350,70 400,20 450,40 C500,60 550,10 600,30" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"></path>
+                          <circle cx="300" cy="60" r="4" class="fill-white stroke-emerald-500 stroke-2"></circle>
+                          <circle cx="450" cy="40" r="4" class="fill-white stroke-emerald-500 stroke-2"></circle>
+                        </svg>
+                      </div>
+
+                      <!-- Categories -->
+                      <div class="grid grid-cols-3 gap-3">
+                        <div class="p-3 rounded-xl border border-rose-100 bg-rose-50/50">
+                          <div class="text-[10px] text-slate-500 mb-1 uppercase tracking-wider">Alimentação</div>
+                          <div class="text-base font-bold text-slate-900 tabular">R$ 2.143</div>
+                          <div class="text-[10px] text-rose-600 font-medium">41% do total</div>
+                        </div>
+                        <div class="p-3 rounded-xl border border-purple-100 bg-purple-50/50">
+                          <div class="text-[10px] text-slate-500 mb-1 uppercase tracking-wider">Lazer</div>
+                          <div class="text-base font-bold text-slate-900 tabular">R$ 1.150</div>
+                          <div class="text-[10px] text-purple-600 font-medium">22% do total</div>
+                        </div>
+                        <div class="p-3 rounded-xl border border-emerald-100 bg-emerald-50">
+                          <div class="text-[10px] text-emerald-700 mb-1 uppercase tracking-wider font-semibold">💡 IA</div>
+                          <div class="text-base font-bold text-slate-900">Cortar 20%</div>
+                          <div class="text-[10px] text-emerald-700 font-medium">+R$ 428/mês</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ==== PHONE: Menta Home ==== -->
+                <div class="absolute top-[25%] left-[-20px] lg:left-6 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border-[8px] flex flex-col overflow-hidden -translate-x-16 -translate-y-1/2 z-30 bg-stone-900 w-[300px] h-[600px] border-stone-900 ring-white/10 ring-1 rounded-[48px] scale-75">
+                  <div class="flex w-full h-8 z-50 absolute top-2 left-0 justify-center">
+                    <div class="w-[90px] h-[24px] bg-black rounded-full grid place-items-center"></div>
+                  </div>
+
+                  <div class="flex-1 bg-[#0A0F2A] w-full h-full rounded-[40px] overflow-hidden flex flex-col relative">
+                    <div class="flex justify-between px-6 pt-3 text-[10px] font-bold text-white/90">
+                      <span>9:41</span>
+                      <div class="flex gap-1">
+                        <iconify-icon icon="lucide:signal" width="10"></iconify-icon>
+                        <iconify-icon icon="lucide:wifi" width="10"></iconify-icon>
+                        <iconify-icon icon="lucide:battery-medium" width="14"></iconify-icon>
+                      </div>
+                    </div>
+
+                    <!-- Top bar -->
+                    <div class="px-5 pt-5 pb-2 flex justify-between items-center">
+                      <div class="flex items-center gap-2">
+                        <svg width="28" height="28" viewBox="0 0 100 100">
+                          <path d="M14 84 V34 Q14 14 32 14 Q50 14 50 34 V84" fill="none" stroke="#4FE0B0" stroke-width="13" stroke-linecap="round"/>
+                          <path d="M50 84 V34 Q50 14 68 14 Q86 14 86 34 V84" fill="none" stroke="#4FE0B0" stroke-width="13" stroke-linecap="round" opacity="0.92"/>
+                          <path d="M20 72 L38 54 L52 64 L78 32" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          <path d="M66 32 L78 32 L78 44" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <div>
+                          <div class="text-[8px] uppercase tracking-widest text-white/50">Olá, Lucas</div>
+                          <div class="text-xs font-bold text-white">Abril · resumo</div>
+                        </div>
+                      </div>
+                      <div class="w-7 h-7 rounded-full bg-white/10 grid place-items-center">
+                        <iconify-icon icon="lucide:bell" width="12" class="text-white/70"></iconify-icon>
+                      </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex flex-col px-5 pt-3 gap-y-4">
+                      <!-- Hero card -->
+                      <div class="relative overflow-hidden rounded-2xl p-4" style="background: linear-gradient(135deg,#163d3a 0%,#0e2a3f 60%,#0a1838 100%); border: 1px solid #222C5E;">
+                        <div class="absolute -top-12 -right-8 h-28 w-28 rounded-full blur-2xl" style="background: rgba(79,224,176,0.35);"></div>
+                        <div class="flex items-center gap-1.5 text-[8px] text-emerald-200 font-semibold uppercase tracking-widest">
+                          <iconify-icon icon="lucide:sparkles" width="9"></iconify-icon>
+                          IA · hoje
+                        </div>
+                        <div class="mt-1 text-2xl font-bold text-white tabular leading-none">R$ 1.280</div>
+                        <div class="text-[10px] text-emerald-300 mt-1">disponíveis pra investir</div>
+                        <div class="mt-3 text-[10px] text-white/70 leading-snug">Considerando contas fixas e seus hábitos do mês.</div>
+                        <button class="mt-3 rounded-full px-3 py-1.5 text-[10px] font-bold bg-emerald-400 text-emerald-950">Investir agora →</button>
+                      </div>
+
+                      <!-- Insight strip -->
+                      <div class="flex items-center gap-2 rounded-xl p-2.5" style="background: #141C44; border: 1px solid #222C5E;">
+                        <div class="w-7 h-7 rounded-lg grid place-items-center" style="background: rgba(79,224,176,0.15);">
+                          <iconify-icon icon="lucide:sparkles" width="11" class="text-emerald-400"></iconify-icon>
+                        </div>
+                        <div class="flex-1">
+                          <div class="text-[10px] font-bold text-white">R$ 2.143 com delivery 😬</div>
+                          <div class="text-[8px] text-white/50">É 27% da renda · cortar 20% libera R$ 428</div>
+                        </div>
+                        <iconify-icon icon="lucide:chevron-right" width="11" class="text-white/40"></iconify-icon>
+                      </div>
+
+                      <!-- Transactions -->
+                      <div class="flex flex-col gap-2">
+                        <div class="text-[10px] font-bold text-white/80">Últimas transações</div>
+                        <div class="flex items-center gap-2.5 p-2 rounded-xl" style="background: #141C44; border: 1px solid #222C5E;">
+                          <div class="w-8 h-8 rounded-lg grid place-items-center" style="background: rgba(255,138,160,0.15); border: 1px solid rgba(255,138,160,0.25);">
+                            <iconify-icon icon="lucide:utensils" width="13" class="text-rose-300"></iconify-icon>
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1">
+                              <div class="text-[10px] font-bold text-white">iFood</div>
+                              <span class="rounded-full px-1 py-0.5 text-[7px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">IA · Alimentação</span>
+                            </div>
+                            <div class="text-[8px] text-white/40 truncate">IFOOD*RESTAURANTE SP</div>
+                          </div>
+                          <div class="text-[10px] font-bold text-white tabular">- R$ 64,90</div>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2 rounded-xl" style="background: #141C44; border: 1px solid #222C5E;">
+                          <div class="w-8 h-8 rounded-lg grid place-items-center" style="background: rgba(122,193,255,0.15); border: 1px solid rgba(122,193,255,0.25);">
+                            <iconify-icon icon="lucide:car" width="13" class="text-blue-300"></iconify-icon>
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1">
+                              <div class="text-[10px] font-bold text-white">Uber</div>
+                              <span class="rounded-full px-1 py-0.5 text-[7px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">IA · Transporte</span>
+                            </div>
+                            <div class="text-[8px] text-white/40 truncate">UBER TRIP</div>
+                          </div>
+                          <div class="text-[10px] font-bold text-white tabular">- R$ 22,50</div>
+                        </div>
+                        <div class="flex items-center gap-2.5 p-2 rounded-xl" style="background: #141C44; border: 1px solid #222C5E;">
+                          <div class="w-8 h-8 rounded-lg grid place-items-center" style="background: rgba(79,224,176,0.15); border: 1px solid rgba(79,224,176,0.25);">
+                            <iconify-icon icon="lucide:arrow-down-left" width="13" class="text-emerald-300"></iconify-icon>
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <div class="text-[10px] font-bold text-white">Salário</div>
+                            <div class="text-[8px] text-white/40 truncate">TED CRED FOLHA</div>
+                          </div>
+                          <div class="text-[10px] font-bold text-emerald-300 tabular">+ R$ 7.800</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Bottom nav -->
+                    <div class="mt-auto p-3">
+                      <div class="flex justify-around items-center rounded-full p-1.5" style="background: rgba(20,28,68,0.9); border: 1px solid #222C5E;">
+                        <div class="flex flex-col items-center gap-0.5 rounded-full px-2 py-1" style="background: #4FE0B0; color: #06241B;">
+                          <iconify-icon icon="lucide:home" width="12"></iconify-icon>
+                          <span class="text-[7px] font-bold">Início</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-0.5 text-white/50"><iconify-icon icon="lucide:wallet" width="12"></iconify-icon><span class="text-[7px]">Gastos</span></div>
+                        <div class="flex flex-col items-center gap-0.5 text-white/50"><iconify-icon icon="lucide:sparkles" width="12"></iconify-icon><span class="text-[7px]">IA</span></div>
+                        <div class="flex flex-col items-center gap-0.5 text-white/50"><iconify-icon icon="lucide:target" width="12"></iconify-icon><span class="text-[7px]">Metas</span></div>
+                        <div class="flex flex-col items-center gap-0.5 text-white/50"><iconify-icon icon="lucide:trending-up" width="12"></iconify-icon><span class="text-[7px]">Investir</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================
+           SECTION 1: PROBLEM / PROMISE
+      ==========================-->
+      <section class="py-16 lg:py-24 bg-white relative border-t border-slate-100">
+        <div class="container mx-auto px-4 lg:px-12 max-w-7xl">
+          <div class="mb-12 lg:mb-20 max-w-3xl">
+            <h2 class="text-3xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-slate-900 mb-6">
+              Dinheiro entrando.
+              <br class="hidden md:block" />
+              <span class="text-slate-400">Clareza nenhuma.</span>
+            </h2>
+            <p class="text-base md:text-xl text-slate-500 font-light leading-relaxed">
+              A maioria das pessoas afoga em planilhas, apps e extratos — e ainda assim não sabe pra onde o dinheiro está indo, quanto pode investir e como.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+            <!-- Pains -->
+            <div class="flex flex-col gap-8">
+              <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-1">A dor</h3>
+              <ul class="flex flex-col gap-6">
+                <li class="flex gap-4 items-start group">
+                  <div class="w-6 h-6 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 mt-0.5 border border-rose-100 group-hover:bg-rose-100 transition-colors">
+                    <iconify-icon icon="lucide:x" width="14" stroke-width="2"></iconify-icon>
+                  </div>
+                  <span class="text-base lg:text-lg text-slate-600 font-medium group-hover:text-slate-900 transition-colors">Você não sabe quanto realmente gasta no mês</span>
+                </li>
+                <li class="flex gap-4 items-start group">
+                  <div class="w-6 h-6 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 mt-0.5 border border-rose-100 group-hover:bg-rose-100 transition-colors">
+                    <iconify-icon icon="lucide:x" width="14" stroke-width="2"></iconify-icon>
+                  </div>
+                  <span class="text-base lg:text-lg text-slate-600 font-medium group-hover:text-slate-900 transition-colors">Não tem ideia de quanto sobra pra investir</span>
+                </li>
+                <li class="flex gap-4 items-start group">
+                  <div class="w-6 h-6 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 mt-0.5 border border-rose-100 group-hover:bg-rose-100 transition-colors">
+                    <iconify-icon icon="lucide:x" width="14" stroke-width="2"></iconify-icon>
+                  </div>
+                  <span class="text-base lg:text-lg text-slate-600 font-medium group-hover:text-slate-900 transition-colors">Acha investir difícil — e por isso adia pra sempre</span>
+                </li>
+                <li class="flex gap-4 items-start group">
+                  <div class="w-6 h-6 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 mt-0.5 border border-rose-100 group-hover:bg-rose-100 transition-colors">
+                    <iconify-icon icon="lucide:x" width="14" stroke-width="2"></iconify-icon>
+                  </div>
+                  <span class="text-base lg:text-lg text-slate-600 font-medium group-hover:text-slate-900 transition-colors">Toma sustos quando a fatura do cartão chega</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Promise -->
+            <div class="relative group">
+              <div class="absolute inset-0 bg-emerald-500/5 blur-3xl rounded-full opacity-50 -z-10 transform group-hover:scale-105 transition-transform duration-700"></div>
+              <div class="bg-slate-50 border border-slate-200 rounded-3xl p-6 lg:p-12 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-emerald-500/30">
+                <div class="absolute top-0 right-0 p-8 opacity-5">
+                  <iconify-icon icon="solar:stars-bold-duotone" width="160" class="text-emerald-900"></iconify-icon>
+                </div>
+                <div class="relative z-10">
+                  <h3 class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    O jeito Menta
+                  </h3>
+                  <p class="text-xl md:text-3xl font-medium text-slate-900 leading-snug tracking-tight">
+                    O Menta conecta com seu banco via Open Finance, classifica cada gasto com IA e te diz <span class="text-emerald-600">exatamente quanto investir hoje</span> — sem você fazer nada.
+                  </p>
+                  <div class="mt-8 lg:mt-10 flex items-center gap-4">
+                    <div class="flex -space-x-3">
+                      <div class="w-10 h-10 rounded-full border-2 border-white bg-emerald-200 grid place-items-center text-emerald-700 font-bold text-xs">LM</div>
+                      <div class="w-10 h-10 rounded-full border-2 border-white bg-emerald-300 grid place-items-center text-emerald-800 font-bold text-xs">JS</div>
+                      <div class="w-10 h-10 rounded-full border-2 border-white bg-emerald-100 grid place-items-center text-emerald-700 text-xs font-bold">+5K</div>
+                    </div>
+                    <div class="text-sm text-slate-500 font-medium">Brasileiros mais tranquilos com o dinheiro</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 2: FEATURES BENTO
+      ==========================-->
+      <section id="recursos" class="py-16 lg:py-24 bg-white border-t border-slate-100 relative scroll-mt-20">
+        <div class="container mx-auto px-4 lg:px-12 max-w-7xl">
+          <div class="text-center max-w-2xl mx-auto mb-12 lg:mb-20">
+            <h2 class="text-3xl lg:text-5xl font-semibold tracking-tight text-slate-900 mb-6">
+              Um app.
+              <br />
+              <span class="text-emerald-600">Tudo que importa do seu dinheiro.</span>
+            </h2>
+            <p class="text-base lg:text-lg text-slate-500 font-light">
+              IA que organiza, analisa e decide com você — pra parar de planilha e começar a viver.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bento-card group p-6 rounded-2xl bg-white border border-slate-200/60 shadow-sm relative overflow-hidden flex flex-col h-full">
+              <div class="bento-icon-bg w-12 h-12 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center mb-6">
+                <iconify-icon icon="lucide:sparkles" width="24" stroke-width="1.5"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-900 mb-2">Categoriza com IA</h3>
+              <p class="text-sm text-slate-500 leading-relaxed font-light">Lê IFOOD, UBER, AMAZON e classifica sozinho em alimentação, transporte e compras.</p>
+            </div>
+
+            <div class="bento-card group p-6 rounded-2xl bg-white border border-slate-200/60 shadow-sm relative overflow-hidden flex flex-col h-full">
+              <div class="bento-icon-bg w-12 h-12 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center mb-6">
+                <iconify-icon icon="lucide:message-circle" width="24" stroke-width="1.5"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-900 mb-2">Chat IA financeiro</h3>
+              <p class="text-sm text-slate-500 leading-relaxed font-light">Pergunta qualquer coisa: "onde corto?", "quanto invisto?", "vou pagar tudo este mês?".</p>
+            </div>
+
+            <div class="bento-card group p-6 rounded-2xl bg-white border border-slate-200/60 shadow-sm relative overflow-hidden flex flex-col h-full">
+              <div class="bento-icon-bg w-12 h-12 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center mb-6">
+                <iconify-icon icon="lucide:trending-up" width="24" stroke-width="1.5"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-900 mb-2">Simulador de riqueza</h3>
+              <p class="text-sm text-slate-500 leading-relaxed font-light">Veja quanto R$ 500/mês viram em 5, 10 ou 20 anos. E onde investir já calculado.</p>
+            </div>
+
+            <div class="bento-card group p-6 rounded-2xl bg-white border border-slate-200/60 shadow-sm relative overflow-hidden flex flex-col h-full">
+              <div class="bento-icon-bg w-12 h-12 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center mb-6">
+                <iconify-icon icon="lucide:bell-ring" width="24" stroke-width="1.5"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-900 mb-2">Alertas inteligentes</h3>
+              <p class="text-sm text-slate-500 leading-relaxed font-light">"Sua conta vai ficar negativa em 5 dias." Avisos que evitam apertos antes de acontecerem.</p>
+            </div>
+          </div>
+
+          <!-- Second row of features (highlighted) -->
+          <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bento-card group p-6 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm relative overflow-hidden flex flex-col">
+              <div class="absolute -top-8 -right-8 w-32 h-32 bg-emerald-200/50 rounded-full blur-2xl"></div>
+              <div class="bento-icon-bg w-12 h-12 rounded-xl bg-white text-emerald-600 flex items-center justify-center mb-6 shadow-sm">
+                <iconify-icon icon="lucide:target" width="24" stroke-width="1.5"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-900 mb-2">Metas automáticas</h3>
+              <p class="text-sm text-slate-600 leading-relaxed font-light">"Quero ir pro Japão em 2 anos." Menta calcula: R$ 765/mês em CDB 110%. Pronto.</p>
+            </div>
+
+            <div class="bento-card group p-6 rounded-2xl bg-slate-900 border border-slate-800 relative overflow-hidden flex flex-col text-white">
+              <div class="absolute -top-8 -right-8 w-32 h-32 bg-emerald-500/20 rounded-full blur-2xl"></div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center mb-6 border border-emerald-500/20">
+                <iconify-icon icon="lucide:flame" width="24" stroke-width="1.5"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-white mb-2">Detector de desperdício</h3>
+              <p class="text-sm text-slate-400 leading-relaxed font-light">A IA identifica padrões ruins — muito iFood, compras impulsivas à noite — e te mostra.</p>
+            </div>
+
+            <div class="bento-card group p-6 rounded-2xl bg-white border border-slate-200/60 shadow-sm relative overflow-hidden flex flex-col">
+              <div class="bento-icon-bg w-12 h-12 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center mb-6">
+                <iconify-icon icon="lucide:trophy" width="24" stroke-width="1.5"></iconify-icon>
+              </div>
+              <h3 class="text-lg font-semibold text-slate-900 mb-2">Desafios gamificados</h3>
+              <p class="text-sm text-slate-500 leading-relaxed font-light">30 dias sem delivery. Quitar cartão. Juntar R$ 1.000. Medalhas, ranking e streak.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 3: HOW IT WORKS
+      ==========================-->
+      <section id="como-funciona" class="py-16 lg:py-24 bg-[#f2fcfd] border-t border-slate-200 relative overflow-hidden scroll-mt-20">
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-200/20 blur-[100px] rounded-full mix-blend-multiply pointer-events-none"></div>
+
+        <div class="container mx-auto px-4 lg:px-12 max-w-7xl relative z-10">
+          <div class="text-center max-w-3xl mx-auto mb-16 lg:mb-20">
+            <h2 class="text-3xl md:text-5xl font-semibold tracking-tight text-slate-900 mb-6">
+              Do extrato bagunçado a decisões certeiras
+            </h2>
+            <p class="text-lg text-slate-500 font-light max-w-xl mx-auto">
+              Em minutos. Sem planilha, sem matemática, sem terminologia chata.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 lg:gap-8">
+            <!-- Step 1: Connect -->
+            <div class="flex flex-col gap-6">
+              <div class="relative bg-white border border-slate-200 rounded-2xl p-2 h-56 lg:h-64 flex items-center justify-center shadow-sm overflow-hidden group">
+                <div class="absolute inset-0 flex items-center justify-center opacity-20">
+                  <div class="w-[200px] h-[200px] border border-dashed border-cyan-400 rounded-full" style="animation: spin 20s linear infinite;"></div>
+                </div>
+
+                <div class="absolute top-12 left-1/2 -translate-x-1/2 -translate-y-12 bg-white p-2 rounded-lg shadow-sm border border-slate-100">
+                  <span class="w-6 h-6 rounded bg-purple-700 grid place-items-center text-white text-[9px] font-bold">Nu</span>
+                </div>
+                <div class="absolute bottom-12 left-8 lg:left-12 bg-white p-2 rounded-lg shadow-sm border border-slate-100">
+                  <span class="w-6 h-6 rounded bg-orange-500 grid place-items-center text-white text-[8px] font-bold">Itaú</span>
+                </div>
+                <div class="absolute bottom-12 right-8 lg:right-12 bg-white p-2 rounded-lg shadow-sm border border-slate-100">
+                  <span class="w-6 h-6 rounded bg-yellow-400 grid place-items-center text-slate-900 text-[9px] font-bold">B</span>
+                </div>
+
+                <!-- Central hub -->
+                <div class="relative z-10 w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+                  <svg width="30" height="30" viewBox="0 0 100 100">
+                    <path d="M14 84 V34 Q14 14 32 14 Q50 14 50 34 V84" fill="none" stroke="white" stroke-width="13" stroke-linecap="round"/>
+                    <path d="M50 84 V34 Q50 14 68 14 Q86 14 86 34 V84" fill="none" stroke="white" stroke-width="13" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="px-2">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-6 h-6 rounded-full bg-cyan-100 text-cyan-700 text-xs font-bold flex items-center justify-center">1</div>
+                  <h3 class="text-xl font-semibold text-slate-900">Conecte</h3>
+                </div>
+                <p class="text-slate-500 leading-relaxed font-light text-sm">
+                  Vincule sua conta via Open Finance Brasil em 2 toques. Funciona com 40+ bancos.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 2: Understand -->
+            <div class="flex flex-col gap-6">
+              <div class="relative bg-white border border-slate-200 rounded-2xl p-6 h-56 lg:h-64 flex items-center justify-center shadow-sm overflow-hidden group">
+                <div class="flex items-center gap-4 w-full justify-center scale-90 lg:scale-100">
+                  <div class="flex flex-col gap-2 opacity-50 scale-90">
+                    <div class="text-[8px] font-mono text-slate-400">IFOOD*RESTAURANTE</div>
+                    <div class="text-[8px] font-mono text-slate-400">UBER TRIP 4382</div>
+                    <div class="text-[8px] font-mono text-slate-400">AMAZON.COM.BR</div>
+                    <div class="text-[8px] font-mono text-slate-400">NETFLIX.COM</div>
+                  </div>
+
+                  <div class="text-cyan-500 flex items-center relative">
+                    <div class="absolute inset-0 bg-cyan-100 blur-xl opacity-50"></div>
+                    <iconify-icon icon="lucide:arrow-right" width="24" class="relative z-10 animate-pulse"></iconify-icon>
+                  </div>
+
+                  <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 w-32 shadow-sm flex flex-col gap-2">
+                    <div class="flex gap-2 items-center">
+                      <div class="w-2 h-2 rounded-full bg-rose-400"></div>
+                      <div class="text-[9px] font-semibold text-slate-700">Alimentação</div>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                      <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                      <div class="text-[9px] font-semibold text-slate-700">Transporte</div>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                      <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                      <div class="text-[9px] font-semibold text-slate-700">Compras</div>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                      <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                      <div class="text-[9px] font-semibold text-slate-700">Lazer</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-2">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-6 h-6 rounded-full bg-cyan-100 text-cyan-700 text-xs font-bold flex items-center justify-center">2</div>
+                  <h3 class="text-xl font-semibold text-slate-900">Entenda</h3>
+                </div>
+                <p class="text-slate-500 leading-relaxed font-light text-sm">
+                  A IA limpa, classifica e organiza cada transação. Você só vive.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 3: Decide -->
+            <div class="flex flex-col gap-6">
+              <div class="relative bg-white border border-slate-200 rounded-2xl h-56 lg:h-64 flex items-center justify-center shadow-sm overflow-hidden group">
+                <div class="w-48 bg-white border border-slate-100 rounded-xl shadow-lg p-4 relative top-4 transition-transform group-hover:-translate-y-2 duration-500">
+                  <div class="flex justify-between items-center mb-4">
+                    <div class="text-[10px] font-bold text-slate-700">Sugestão IA</div>
+                    <div class="h-4 w-4 text-emerald-500"><iconify-icon icon="lucide:trending-up"></iconify-icon></div>
+                  </div>
+                  <div class="text-lg font-bold text-slate-900 tabular">R$ 1.280</div>
+                  <div class="text-[9px] text-slate-500">disponíveis pra investir</div>
+                  <svg viewBox="0 0 100 30" class="w-full h-8 overflow-visible mt-2">
+                    <path d="M0,25 C20,25 20,5 40,10 C60,15 60,2 100,0" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round"></path>
+                    <circle cx="100" cy="0" r="3" class="fill-white stroke-cyan-500 stroke-2"></circle>
+                  </svg>
+
+                  <div class="absolute -top-6 -right-8 bg-slate-900 text-white text-[10px] px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 animate-bounce" style="animation-duration: 3s;">
+                    <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                    Investir agora
+                  </div>
+                </div>
+              </div>
+              <div class="px-2">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-6 h-6 rounded-full bg-cyan-100 text-cyan-700 text-xs font-bold flex items-center justify-center">3</div>
+                  <h3 class="text-xl font-semibold text-slate-900">Decida</h3>
+                </div>
+                <p class="text-slate-500 leading-relaxed font-light text-sm">
+                  Insights diários, alertas em tempo real e sugestões prontas — quanto investir, onde cortar, qual meta priorizar.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 4: COMPARISON
+      ==========================-->
+      <section class="py-16 lg:py-24 bg-white relative border-t border-slate-100">
+        <div class="container mx-auto px-4 lg:px-12 max-w-5xl">
+          <div class="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
+            <h2 class="text-3xl lg:text-5xl font-semibold tracking-tight text-slate-900 mb-6">
+              Por que Menta e não outro app?
+            </h2>
+            <p class="text-base lg:text-lg text-slate-500 font-light">
+              Você não precisa de outra planilha. Precisa de algo que pense por você.
+            </p>
+          </div>
+
+          <div class="rounded-3xl border border-slate-200 overflow-hidden bg-slate-50 shadow-sm text-xs sm:text-sm">
+            <div class="grid grid-cols-2 font-semibold tracking-wide border-b border-slate-200">
+              <div class="p-4 lg:p-6 bg-white flex items-center justify-center md:justify-start gap-3 border-r border-slate-100 relative">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+                <svg width="22" height="22" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="cmp-mint" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#9CF0CD"/><stop offset="55%" stop-color="#4FE0B0"/><stop offset="100%" stop-color="#1F8E70"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M14 84 V34 Q14 14 32 14 Q50 14 50 34 V84" fill="none" stroke="url(#cmp-mint)" stroke-width="13" stroke-linecap="round"/>
+                  <path d="M50 84 V34 Q50 14 68 14 Q86 14 86 34 V84" fill="none" stroke="url(#cmp-mint)" stroke-width="13" stroke-linecap="round"/>
+                </svg>
+                <span class="text-slate-900 text-base lg:text-lg">Menta</span>
+              </div>
+              <div class="p-4 lg:p-6 bg-slate-50 flex items-center justify-center md:justify-start text-slate-400">
+                <span class="text-sm lg:text-lg">Apps tradicionais & planilhas</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 border-b border-slate-100 group">
+              <div class="p-4 lg:p-6 bg-white border-r border-slate-100 flex items-center gap-3 lg:gap-4 text-emerald-950 font-medium transition-colors group-hover:bg-emerald-50/10">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Categoriza com IA automaticamente</span>
+              </div>
+              <div class="p-4 lg:p-6 flex items-center gap-3 lg:gap-4 text-slate-500 font-light bg-slate-50/50">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:x" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Você categoriza tudo na mão</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 border-b border-slate-100 group">
+              <div class="p-4 lg:p-6 bg-white border-r border-slate-100 flex items-center gap-3 lg:gap-4 text-emerald-950 font-medium transition-colors group-hover:bg-emerald-50/10">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Diz quanto investir hoje</span>
+              </div>
+              <div class="p-4 lg:p-6 flex items-center gap-3 lg:gap-4 text-slate-500 font-light bg-slate-50/50">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:x" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Mostra só relatórios</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 border-b border-slate-100 group">
+              <div class="p-4 lg:p-6 bg-white border-r border-slate-100 flex items-center gap-3 lg:gap-4 text-emerald-950 font-medium transition-colors group-hover:bg-emerald-50/10">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Prevê quando sua conta vai estourar</span>
+              </div>
+              <div class="p-4 lg:p-6 flex items-center gap-3 lg:gap-4 text-slate-500 font-light bg-slate-50/50">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:x" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Você só descobre depois que estourou</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 border-b border-slate-100 group">
+              <div class="p-4 lg:p-6 bg-white border-r border-slate-100 flex items-center gap-3 lg:gap-4 text-emerald-950 font-medium transition-colors group-hover:bg-emerald-50/10">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Chat IA pra qualquer dúvida financeira</span>
+              </div>
+              <div class="p-4 lg:p-6 flex items-center gap-3 lg:gap-4 text-slate-500 font-light bg-slate-50/50">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:x" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Você googla e adivinha</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 group">
+              <div class="p-4 lg:p-6 bg-white border-r border-slate-100 flex items-center gap-3 lg:gap-4 text-emerald-950 font-medium transition-colors group-hover:bg-emerald-50/10">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Metas calculadas pela IA</span>
+              </div>
+              <div class="p-4 lg:p-6 flex items-center gap-3 lg:gap-4 text-slate-500 font-light bg-slate-50/50">
+                <div class="w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center shrink-0">
+                  <iconify-icon icon="lucide:x" width="12" stroke-width="3"></iconify-icon>
+                </div>
+                <span>Metas que você nunca cumpre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 5: STATS / IMPACT
+      ==========================-->
+      <section class="relative bg-[#031F18] py-20 lg:py-32 overflow-hidden border-t border-white/5">
+        <div class="absolute inset-0 z-0">
+          <div class="absolute right-0 top-0 h-full w-2/3 bg-dots opacity-20" style="mask-image: linear-gradient(to left, black, transparent); -webkit-mask-image: linear-gradient(to left, black, transparent);"></div>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-4 lg:px-12 max-w-7xl relative z-10">
+          <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 mb-16 lg:mb-24">
+            <div class="flex flex-col justify-center">
+              <h3 class="uppercase text-sm font-bold text-emerald-400 tracking-wide mb-6">Impacto real</h3>
+              <h2 class="md:text-5xl lg:text-6xl text-4xl font-semibold text-white tracking-tight mb-8">
+                Quem usa Menta gasta menos e investe mais
+              </h2>
+              <p class="leading-relaxed text-lg font-light text-slate-400 max-w-xl">
+                Em média, usuários do Menta cortam 22% dos gastos invisíveis no primeiro mês — e começam a investir uma quantia que antes "sumia" na fatura.
+              </p>
+            </div>
+
+            <div class="relative hidden lg:block h-full min-h-[400px]">
+              <div class="absolute right-[-100px] top-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-white/5 rounded-full opacity-20"></div>
+              <div class="absolute right-[-50px] top-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-white/5 rounded-full opacity-30"></div>
+              <div class="absolute right-[0px] top-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-white/10 rounded-full opacity-40"></div>
+
+              <svg class="overflow-visible absolute top-0 right-0 bottom-0 left-0 w-[544px] h-[400px]" viewBox="0 0 600 600">
+                <path d="M 100 300 Q 300 100 500 300" fill="none" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="4 4"></path>
+                <circle cx="500" cy="300" r="4" class="fill-emerald-500 animate-pulse"></circle>
+                <circle cx="100" cy="300" r="4" class="fill-emerald-500"></circle>
+                <path d="M 150 400 Q 350 500 550 200" fill="none" stroke="#34d399" stroke-width="1.5" stroke-opacity="0.2"></path>
+                <circle cx="550" cy="200" r="3" class="fill-emerald-300"></circle>
+              </svg>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 border-t border-white/10 pt-12">
+            <div class="border-l-2 border-emerald-500 pl-6">
+              <div class="text-3xl font-bold text-white mb-2 tracking-tight">+5.000</div>
+              <p class="text-sm text-slate-400 font-medium">Brasileiros usando Menta pra organizar a vida financeira.</p>
+            </div>
+            <div class="border-l-2 border-emerald-500 pl-6">
+              <div class="text-3xl font-bold text-white mb-2 tracking-tight">22%</div>
+              <p class="text-sm text-slate-400 font-medium">Redução média em gastos invisíveis no primeiro mês.</p>
+            </div>
+            <div class="border-l-2 border-emerald-500 pl-6">
+              <div class="text-3xl font-bold text-white mb-2 tracking-tight">R$ 480</div>
+              <p class="text-sm text-slate-400 font-medium">Sobra média que vira investimento por usuário/mês.</p>
+            </div>
+            <div class="border-l-2 border-emerald-500 pl-6">
+              <div class="text-3xl font-bold text-white tracking-tight mb-2">2 min</div>
+              <p class="text-sm font-medium text-slate-400">Pra conectar a primeira conta e ver tudo organizado.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 6: TESTIMONIALS
+      ==========================-->
+      <section class="py-16 lg:py-24 bg-stone-50 border-t border-slate-200 overflow-hidden relative">
+        <div class="container mx-auto px-4 lg:px-12 max-w-7xl mb-12 flex justify-between items-end">
+          <div>
+            <p class="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-3">Comunidade</p>
+            <h2 class="text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight">Quem usa, recomenda</h2>
+          </div>
+          <div class="hidden sm:flex items-center gap-2 text-slate-400">
+            <iconify-icon icon="lucide:quote" width="16"></iconify-icon>
+            <span class="text-sm font-medium">Depoimentos reais</span>
+          </div>
+        </div>
+
+        <div class="relative w-full">
+          <div class="pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-40 bg-gradient-to-r from-stone-50 to-transparent z-10"></div>
+          <div class="pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-40 bg-gradient-to-l from-stone-50 to-transparent z-10"></div>
+
+          <div class="flex gap-6 animate-marquee w-max hover:[animation-play-state:paused]">
+            <!-- Set 1 -->
+            <div class="w-[300px] sm:w-[350px] md:w-[400px] p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center font-bold">MR</div>
+                <div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-sm font-semibold text-slate-900">Marina Ribeiro</span>
+                    <iconify-icon icon="lucide:check-circle-2" class="text-emerald-500" width="14"></iconify-icon>
+                  </div>
+                  <p class="text-xs text-slate-500">Designer · São Paulo</p>
+                </div>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed">"Em 2 meses cortei R$ 800/mês de delivery sem nem perceber. A IA me mostrou padrões que eu jurava que não tinha."</p>
+            </div>
+
+            <div class="w-[300px] sm:w-[350px] md:w-[400px] p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center font-bold">PA</div>
+                <div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-sm font-semibold text-slate-900">Pedro Almeida</span>
+                    <iconify-icon icon="lucide:check-circle-2" class="text-emerald-500" width="14"></iconify-icon>
+                  </div>
+                  <p class="text-xs text-slate-500">Dev · Florianópolis</p>
+                </div>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed">"Comecei a investir R$ 500/mês porque o Menta me mostrou que sobrava. Já são R$ 6.200 em 1 ano. Mudou minha vida."</p>
+            </div>
+
+            <div class="w-[300px] sm:w-[350px] md:w-[400px] p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center font-bold">JS</div>
+                <div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-sm font-semibold text-slate-900">Juliana Souza</span>
+                    <iconify-icon icon="lucide:check-circle-2" class="text-emerald-500" width="14"></iconify-icon>
+                  </div>
+                  <p class="text-xs text-slate-500">Médica · Recife</p>
+                </div>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed">"O alerta de 'sua conta vai ficar negativa em 5 dias' me salvou de pagar juros. Vale o premium só por isso."</p>
+            </div>
+
+            <div class="w-[300px] sm:w-[350px] md:w-[400px] p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center font-bold">RC</div>
+                <div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-sm font-semibold text-slate-900">Rafael Costa</span>
+                    <iconify-icon icon="lucide:check-circle-2" class="text-emerald-500" width="14"></iconify-icon>
+                  </div>
+                  <p class="text-xs text-slate-500">Empreendedor · BH</p>
+                </div>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed">"Substituiu 4 planilhas, 2 apps e a ansiedade de não saber pra onde o dinheiro ia."</p>
+            </div>
+
+            <!-- Duplicates for loop -->
+            <div class="w-[300px] sm:w-[350px] md:w-[400px] p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center font-bold">MR</div>
+                <div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-sm font-semibold text-slate-900">Marina Ribeiro</span>
+                    <iconify-icon icon="lucide:check-circle-2" class="text-emerald-500" width="14"></iconify-icon>
+                  </div>
+                  <p class="text-xs text-slate-500">Designer · São Paulo</p>
+                </div>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed">"Em 2 meses cortei R$ 800/mês de delivery sem nem perceber. A IA me mostrou padrões que eu jurava que não tinha."</p>
+            </div>
+
+            <div class="w-[300px] sm:w-[350px] md:w-[400px] p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center font-bold">PA</div>
+                <div>
+                  <div class="flex items-center gap-1">
+                    <span class="text-sm font-semibold text-slate-900">Pedro Almeida</span>
+                    <iconify-icon icon="lucide:check-circle-2" class="text-emerald-500" width="14"></iconify-icon>
+                  </div>
+                  <p class="text-xs text-slate-500">Dev · Florianópolis</p>
+                </div>
+              </div>
+              <p class="text-slate-600 text-sm leading-relaxed">"Comecei a investir R$ 500/mês porque o Menta me mostrou que sobrava. Já são R$ 6.200 em 1 ano. Mudou minha vida."</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 7: SECURITY
+      ==========================-->
+      <section id="seguranca" class="py-16 lg:py-24 bg-white relative scroll-mt-20">
+        <div class="container mx-auto px-4 lg:px-12 max-w-7xl">
+          <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div class="flex flex-col gap-6 order-2 lg:order-1">
+              <span class="text-emerald-600 font-bold uppercase text-xs tracking-widest">Segurança em primeiro lugar</span>
+              <h2 class="text-3xl md:text-5xl font-semibold text-slate-900 tracking-tight leading-tight">
+                Regulado pelo BACEN.
+                <span class="text-slate-400">Mais seguro que sua planilha.</span>
+              </h2>
+              <p class="text-slate-500 leading-relaxed font-light">
+                O Menta usa Open Finance Brasil — o mesmo padrão regulado pelo Banco Central que conecta os maiores bancos do país. Nada de senha. Acesso só de leitura.
+              </p>
+
+              <ul class="flex flex-col gap-4 mt-2">
+                <li class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center">
+                    <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                  </div>
+                  <span class="text-slate-600 font-medium">Conformidade com a LGPD</span>
+                </li>
+                <li class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center">
+                    <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                  </div>
+                  <span class="text-slate-600 font-medium">Criptografia bancária ponta a ponta</span>
+                </li>
+                <li class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center">
+                    <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                  </div>
+                  <span class="text-slate-600 font-medium">Acesso só de leitura — não movimentamos seu dinheiro</span>
+                </li>
+                <li class="flex items-center gap-3">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 grid place-items-center">
+                    <iconify-icon icon="lucide:check" width="12" stroke-width="3"></iconify-icon>
+                  </div>
+                  <span class="text-slate-600 font-medium">Você revoga o acesso quando quiser</span>
+                </li>
+              </ul>
+
+              <div class="mt-4 pt-8 border-t border-slate-100">
+                <div class="flex items-center gap-4 text-slate-400 text-sm font-bold">
+                  <span class="px-3 py-1.5 rounded-md border border-slate-200">BACEN</span>
+                  <span class="px-3 py-1.5 rounded-md border border-slate-200">Open Finance</span>
+                  <span class="px-3 py-1.5 rounded-md border border-slate-200">LGPD</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual lock -->
+            <div class="relative flex justify-center items-center order-1 lg:order-2 h-[300px] lg:h-[400px] bg-slate-50 rounded-3xl border border-slate-100 overflow-hidden group">
+              <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+              <div class="absolute w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl z-0 lock-glow"></div>
+
+              <div class="relative z-10 flex flex-col items-center transform transition-transform duration-500 group-hover:scale-105 scale-75 lg:scale-100">
+                <div class="w-32 h-24 border-[12px] border-slate-300 rounded-t-full mb-[-20px] relative z-0 transition-colors duration-300 group-hover:border-emerald-200"></div>
+                <div class="w-48 h-40 bg-white rounded-3xl shadow-xl border border-slate-200 flex items-center justify-center relative z-10">
+                  <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500">
+                    <iconify-icon icon="lucide:shield-check" width="32" stroke-width="2"></iconify-icon>
+                  </div>
+                  <div class="absolute top-4 right-4 flex gap-1.5">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                  </div>
+                </div>
+                <div class="absolute -bottom-6 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+                  <iconify-icon icon="lucide:lock" width="12"></iconify-icon>
+                  Protegido
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 8: PRICING / FREE VS PREMIUM
+      ==========================-->
+      <section id="precos" class="py-16 lg:py-24 bg-slate-50 border-t border-slate-100 scroll-mt-20">
+        <div class="container mx-auto px-4 lg:px-12 max-w-5xl">
+          <div class="text-center max-w-2xl mx-auto mb-12">
+            <h2 class="text-3xl lg:text-5xl font-semibold tracking-tight text-slate-900 mb-6">Escolha seu plano</h2>
+            <p class="text-base lg:text-lg text-slate-500 font-light">Comece grátis. Suba pra Premium quando quiser tudo no automático.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Free -->
+            <div class="rounded-3xl bg-white border border-slate-200 p-8 flex flex-col">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xl font-bold text-slate-900">Free</h3>
+                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest bg-slate-100 text-slate-500 rounded-full">Sempre grátis</span>
+              </div>
+              <div class="text-4xl font-bold text-slate-900 mb-2">R$ 0</div>
+              <div class="text-sm text-slate-500 mb-6">Pra começar a se entender com seu dinheiro.</div>
+              <ul class="flex flex-col gap-3 text-sm text-slate-600 mb-8">
+                <li class="flex items-center gap-2">
+                  <iconify-icon icon="lucide:check" class="text-emerald-500" width="16"></iconify-icon>
+                  Upload manual da fatura do cartão
+                </li>
+                <li class="flex items-center gap-2">
+                  <iconify-icon icon="lucide:check" class="text-emerald-500" width="16"></iconify-icon>
+                  Resumo IA da fatura (1 por mês)
+                </li>
+                <li class="flex items-center gap-2 text-slate-400">
+                  <iconify-icon icon="lucide:lock" width="16"></iconify-icon>
+                  Sem conexão Open Finance
+                </li>
+                <li class="flex items-center gap-2 text-slate-400">
+                  <iconify-icon icon="lucide:lock" width="16"></iconify-icon>
+                  Sem categorização automática
+                </li>
+                <li class="flex items-center gap-2 text-slate-400">
+                  <iconify-icon icon="lucide:lock" width="16"></iconify-icon>
+                  Sem alertas em tempo real
+                </li>
+              </ul>
+              <button class="mt-auto w-full py-3 rounded-full border border-slate-200 text-slate-900 font-semibold hover:bg-slate-100 transition-colors">Começar grátis</button>
+            </div>
+
+            <!-- Premium -->
+            <div class="relative rounded-3xl p-8 flex flex-col text-white overflow-hidden" style="background: linear-gradient(135deg, #043833 0%, #022C22 100%);">
+              <div class="absolute -top-12 -right-12 w-48 h-48 bg-emerald-400/30 rounded-full blur-3xl"></div>
+              <div class="flex items-center justify-between mb-2 relative">
+                <h3 class="text-xl font-bold">Premium</h3>
+                <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest bg-emerald-400 text-emerald-950 rounded-full">7 dias grátis</span>
+              </div>
+              <div class="text-4xl font-bold mb-2 relative">R$ 19,90<span class="text-base font-medium text-emerald-200">/mês</span></div>
+              <div class="text-sm text-emerald-100 mb-6 relative">Tudo no piloto automático.</div>
+              <ul class="flex flex-col gap-3 text-sm text-emerald-50 mb-8 relative">
+                <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-emerald-300" width="16"></iconify-icon> Tudo do Free</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-emerald-300" width="16"></iconify-icon> Open Finance · todas as contas</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-emerald-300" width="16"></iconify-icon> Categorização IA ilimitada</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-emerald-300" width="16"></iconify-icon> Previsão de saldo + alertas em tempo real</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-emerald-300" width="16"></iconify-icon> Chat IA + análise de hábitos</li>
+                <li class="flex items-center gap-2"><iconify-icon icon="lucide:check" class="text-emerald-300" width="16"></iconify-icon> Metas, simulador de riqueza, desafios</li>
+              </ul>
+              <button class="mt-auto w-full py-3 rounded-full bg-white text-emerald-950 font-bold hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2 relative">
+                Assinar Premium
+                <iconify-icon icon="lucide:arrow-right" width="16"></iconify-icon>
+              </button>
+              <div class="text-center text-[11px] text-emerald-200 mt-3 relative">Cancele quando quiser</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           SECTION 9: FINAL CTA
+      ==========================-->
+      <section class="py-20 lg:py-32 relative overflow-hidden bg-slate-950 border-t border-slate-900">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-cyan-900/20 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div class="container mx-auto px-4 lg:px-12 max-w-4xl relative z-10 text-center">
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-semibold text-white tracking-tight mb-6">
+            Pare de adivinhar.
+            <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+              Comece a controlar.
+            </span>
+          </h2>
+          <p class="text-base md:text-xl text-slate-400 font-light mb-10 max-w-2xl mx-auto">
+            Conecte sua conta em 2 minutos e veja exatamente quanto você pode investir hoje.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button class="w-full sm:w-auto px-8 py-4 bg-white text-slate-950 rounded-full font-bold text-sm hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2 group">
+              Começar grátis
+              <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform" width="16"></iconify-icon>
+            </button>
+            <button class="w-full sm:w-auto px-8 py-4 bg-transparent border border-slate-700 text-white rounded-full font-medium text-sm hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+              <iconify-icon icon="lucide:play" width="16"></iconify-icon>
+              Ver demonstração
+            </button>
+          </div>
+
+          <div class="mt-8 flex items-center justify-center gap-2 text-emerald-200/70 text-xs">
+            <iconify-icon icon="lucide:shield-check" width="14"></iconify-icon>
+            Open Finance Brasil · BACEN · LGPD
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================
+           FOOTER
+      ==========================-->
+      <footer class="bg-white border-t border-slate-200 pt-16 lg:pt-20 pb-12">
+        <div class="container mx-auto px-4 lg:px-12 max-w-7xl">
+          <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-8 mb-16">
+            <div class="col-span-2 lg:col-span-2">
+              <div class="flex items-center gap-2 mb-6">
+                <svg width="32" height="32" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="footer-mint" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#9CF0CD"/><stop offset="55%" stop-color="#4FE0B0"/><stop offset="100%" stop-color="#1F8E70"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M14 84 V34 Q14 14 32 14 Q50 14 50 34 V84" fill="none" stroke="url(#footer-mint)" stroke-width="13" stroke-linecap="round"/>
+                  <path d="M50 84 V34 Q50 14 68 14 Q86 14 86 34 V84" fill="none" stroke="url(#footer-mint)" stroke-width="13" stroke-linecap="round"/>
+                  <path d="M20 72 L38 54 L52 64 L78 32" fill="none" stroke="#0a0f2a" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M66 32 L78 32 L78 44" fill="none" stroke="#0a0f2a" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-lg font-bold text-slate-900 tracking-tight">Menta</span>
+              </div>
+              <p class="text-slate-500 text-sm leading-relaxed max-w-sm">
+                O Menta conecta com seu banco, organiza seus gastos com IA e te diz exatamente o que fazer com cada real.
+              </p>
+              <div class="flex gap-4 mt-6 text-slate-400">
+                <a href="#" class="hover:text-emerald-600 transition-colors"><iconify-icon icon="lucide:instagram" width="20"></iconify-icon></a>
+                <a href="#" class="hover:text-emerald-600 transition-colors"><iconify-icon icon="lucide:twitter" width="20"></iconify-icon></a>
+                <a href="#" class="hover:text-emerald-600 transition-colors"><iconify-icon icon="lucide:linkedin" width="20"></iconify-icon></a>
+              </div>
+            </div>
+
+            <div>
+              <h4 class="text-sm font-bold text-slate-900 mb-4">Produto</h4>
+              <ul class="flex flex-col gap-3 text-sm text-slate-500">
+                <li><a href="#como-funciona" class="hover:text-emerald-600 transition-colors">Como funciona</a></li>
+                <li><a href="#recursos" class="hover:text-emerald-600 transition-colors">Recursos</a></li>
+                <li><a href="#precos" class="hover:text-emerald-600 transition-colors">Preços</a></li>
+                <li><a href="#seguranca" class="hover:text-emerald-600 transition-colors">Segurança</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm mb-4">Empresa</h4>
+              <ul class="flex flex-col gap-3 text-sm text-slate-500">
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">Sobre</a></li>
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">Blog</a></li>
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">Carreiras</a></li>
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">Contato</a></li>
+              </ul>
+            </div>
+
+            <div class="col-span-2 md:col-span-1">
+              <h4 class="font-bold text-slate-900 text-sm mb-4">Legal</h4>
+              <ul class="flex flex-col gap-3 text-sm text-slate-500">
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">Privacidade</a></li>
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">Termos</a></li>
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">Segurança</a></li>
+                <li><a href="#" class="hover:text-emerald-600 transition-colors">LGPD</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <p class="text-xs text-slate-400">© 2026 Menta · Todos os direitos reservados.</p>
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+              <span class="text-xs font-medium text-slate-500">Sistemas operacionais</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      (function() {
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const closeBtn = document.getElementById('close-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const body = document.body;
+        function openMenu() {
+          mobileMenu.classList.remove('hidden');
+          mobileMenu.classList.add('flex');
+          body.classList.add('menu-open');
+        }
+        function closeMenu() {
+          mobileMenu.classList.add('hidden');
+          mobileMenu.classList.remove('flex');
+          body.classList.remove('menu-open');
+        }
+        function toggleMenu() {
+          if (mobileMenu.classList.contains('hidden')) openMenu();
+          else closeMenu();
+        }
+        if (menuBtn && mobileMenu && closeBtn) {
+          menuBtn.addEventListener('click', toggleMenu);
+          closeBtn.addEventListener('click', toggleMenu);
+          // close mobile menu when clicking any link inside it
+          mobileMenu.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', closeMenu);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
