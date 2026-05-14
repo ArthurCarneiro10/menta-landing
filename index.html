@@ -56,8 +56,257 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- Estilos e configuração do app -->
-    <link rel="stylesheet" href="css/styles.css" />
-    <script src="js/main.js" defer></script>
+    <style>
+/* ============================================
+   MENTA — STYLES
+   Estilos customizados que complementam o Tailwind
+   ============================================ */
+
+
+/* --------------------------------------------
+   1. Base / Tipografia
+   -------------------------------------------- */
+html {
+  /* Rolagem suave ao clicar em âncoras do menu (Como funciona, Recursos, etc) */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Compensa a navbar fixa quando uma âncora é alvo do scroll
+   (fallback caso scroll-mt-24 do Tailwind não esteja disponível) */
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+/* Números monetários alinhados (R$ 1.280,00) */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* --------------------------------------------
+   2. Hero — recorte diagonal e animações
+   -------------------------------------------- */
+.hero-clip {
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+}
+
+@media (min-width: 1024px) {
+  .hero-clip {
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 95%);
+  }
+}
+
+/* Gradiente verde animado do hero */
+.stripe-gradient {
+  background: linear-gradient(
+    135deg,
+    #0c1f18 0%,
+    #183e31 25%,
+    #183e31 50%,
+    #3d7d66 75%,
+    #0c2019 100%
+  );
+  background-size: 300% 300%;
+  animation: stripe-flow 20s ease infinite;
+}
+
+@keyframes stripe-flow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Feixe diagonal de luz no hero */
+.diagonal-beam {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  top: 0;
+  left: -50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(122, 217, 183, 0.18) 0%,
+    rgba(61, 125, 102, 0) 70%
+  );
+  transform: rotate(-35deg) translateY(0);
+  animation: beam-drift 15s infinite alternate ease-in-out;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+@keyframes beam-drift {
+  0% {
+    transform: rotate(-35deg) translateY(0) translateX(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: rotate(-35deg) translateY(-10%) translateX(10%);
+    opacity: 1;
+  }
+}
+
+/* Bolha verde flutuando no fundo */
+.floating-blob {
+  animation: float-blob 20s infinite linear;
+}
+
+@keyframes float-blob {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  33%  { transform: translate(30px, -50px) rotate(120deg); }
+  66%  { transform: translate(-20px, 20px) rotate(240deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+
+/* --------------------------------------------
+   3. Mockups 3D (browser + celular do hero)
+   -------------------------------------------- */
+.preserve-3d   { transform-style: preserve-3d; }
+.perspective-2000 { perspective: 2000px; }
+
+
+/* --------------------------------------------
+   4. Beams SVG conectando os mockups
+   -------------------------------------------- */
+.beam-path {
+  stroke-dasharray: 100, 800;
+  stroke-dashoffset: 900;
+  animation: beam-flow 4s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(122, 217, 183, 0.8));
+}
+
+.beam-path-fast {
+  stroke-dasharray: 80, 600;
+  stroke-dashoffset: 680;
+  animation: beam-flow 3s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(122, 217, 183, 0.8));
+}
+
+@keyframes beam-flow {
+  to { stroke-dashoffset: 0; }
+}
+
+
+/* --------------------------------------------
+   5. Cards do bento (features)
+   -------------------------------------------- */
+.bento-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+  border-color: rgba(122, 217, 183, 0.3);
+}
+
+.bento-icon-bg {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.bento-card:hover .bento-icon-bg {
+  background-color: #eaf7f1;
+  color: #3d7d66;
+}
+
+
+/* --------------------------------------------
+   6. Padrão de pontos (seção de stats)
+   -------------------------------------------- */
+.bg-dots {
+  background-image: radial-gradient(rgba(122, 217, 183, 0.22) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+
+/* --------------------------------------------
+   7. Marquee — depoimentos rolando
+   -------------------------------------------- */
+.animate-marquee {
+  animation: marquee-ltr 60s linear infinite;
+}
+
+@keyframes marquee-ltr {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+
+/* --------------------------------------------
+   8. Cadeado pulsante (seção de segurança)
+   -------------------------------------------- */
+.lock-glow {
+  animation: lock-pulse 3s infinite;
+}
+
+@keyframes lock-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(61, 125, 102, 0); }
+  50%      { box-shadow: 0 0 0 10px rgba(61, 125, 102, 0.1); }
+}
+
+
+/* --------------------------------------------
+   9. Menu mobile aberto
+   -------------------------------------------- */
+.menu-open {
+  overflow: hidden;
+}
+
+    </style>
+    <script defer>
+/* ============================================
+   MENTA — JAVASCRIPT
+   Interações da UI (menu mobile)
+   A configuração do Tailwind ficou inline no <head> do index.html,
+   pois precisa estar definida antes do CDN carregar.
+   ============================================ */
+
+
+/* --------------------------------------------
+   Menu mobile (abrir, fechar, fechar ao clicar)
+   -------------------------------------------- */
+(function initMobileMenu() {
+  const menuBtn    = document.getElementById('mobile-menu-btn');
+  const closeBtn   = document.getElementById('close-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const body       = document.body;
+
+  if (!menuBtn || !closeBtn || !mobileMenu) return;
+
+  function openMenu() {
+    mobileMenu.classList.remove('hidden');
+    mobileMenu.classList.add('flex');
+    body.classList.add('menu-open');
+  }
+
+  function closeMenu() {
+    mobileMenu.classList.add('hidden');
+    mobileMenu.classList.remove('flex');
+    body.classList.remove('menu-open');
+  }
+
+  function toggleMenu() {
+    if (mobileMenu.classList.contains('hidden')) {
+      openMenu();
+    } else {
+      closeMenu();
+    }
+  }
+
+  menuBtn.addEventListener('click', toggleMenu);
+  closeBtn.addEventListener('click', toggleMenu);
+
+  // Fecha o menu ao clicar em qualquer link (nav âncora)
+  mobileMenu.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+})();
+
+    </script>
   </head>
   <body class="bg-stone-50 text-slate-900 antialiased overflow-x-hidden selection:bg-menta-500/30">
 
