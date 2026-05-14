@@ -1,0 +1,243 @@
+/* ==========================================================================
+   Menta — Landing Page
+   Custom styles (complementa o Tailwind CDN)
+   ==========================================================================
+   Conteúdo:
+   1. Tokens   ─ variáveis CSS da marca
+   2. Base     ─ reset leve, tipografia, comportamento global
+   3. Hero     ─ recortes e gradientes animados do topo
+   4. Effects  ─ feixes, blobs, beams animados
+   5. Cards    ─ hover dos cards de features (bento)
+   6. Patterns ─ texturas (dots, gradientes)
+   7. Motion   ─ keyframes
+   8. Utils    ─ utilitários (.tabular, .menu-open, etc)
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Tokens — design system da marca
+   --------------------------------------------------------------------------
+   Toda cor, sombra ou raio que aparece em mais de um lugar deve viver aqui.
+   Quem quiser mudar a paleta, mexe SÓ aqui. */
+:root {
+  /* Verdes menta — escala de claro a escuro */
+  --menta-50:  #eaf7f1;
+  --menta-100: #7cdbb9;
+  --menta-200: #7ad9b7;   /* PRIMÁRIO — cor de marca */
+  --menta-400: #407c66;
+  --menta-500: #3d7d66;
+  --menta-700: #183e31;
+  --menta-800: #0c2019;
+  --menta-900: #0c1f18;
+
+  /* Pretos */
+  --ink-900: #010302;
+  --ink-950: #010201;
+
+  /* Sombras semânticas */
+  --shadow-cta:   0 4px 16px -2px rgba(122, 217, 183, 0.40);
+  --shadow-card:  0 30px 80px -20px rgba(0, 0, 0, 0.50);
+
+  /* Raios */
+  --radius-card: 1.5rem;
+  --radius-pill: 9999px;
+
+  /* Header / navbar — usado em scroll-margin-top das âncoras */
+  --header-h: 96px;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. Base — tipografia e comportamento global
+   -------------------------------------------------------------------------- */
+html {
+  /* Rolagem suave quando clicar nas âncoras do menu */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Compensa a altura da nav fixa nas âncoras das seções */
+section[id] {
+  scroll-margin-top: var(--header-h);
+}
+
+/* Números monetários e tabulares alinhados (R$ 1.280,00) */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Hero — recorte diagonal do fundo escuro
+   -------------------------------------------------------------------------- */
+.hero-clip {
+  clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+}
+
+@media (min-width: 1024px) {
+  .hero-clip {
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 95%);
+  }
+}
+
+/* Gradiente animado de fundo do hero (sutilmente flutua) */
+.stripe-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--menta-900) 0%,
+    var(--menta-700) 25%,
+    var(--menta-500) 50%,
+    var(--menta-400) 75%,
+    var(--menta-800) 100%
+  );
+  background-size: 300% 300%;
+  animation: stripe-flow 20s ease infinite;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Effects — feixes, blobs e beams animados
+   -------------------------------------------------------------------------- */
+
+/* Feixe diagonal de luz que cruza o hero */
+.diagonal-beam {
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(122, 217, 183, 0.18) 0%,
+    rgba(61, 125, 102, 0) 70%
+  );
+  transform: rotate(-35deg) translateY(0);
+  animation: beam-drift 15s infinite alternate ease-in-out;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Blobs flutuantes (manchas coloridas que se movem) */
+.floating-blob {
+  animation: float-blob 20s infinite linear;
+}
+
+/* Perspectiva 3D para o mockup do app no hero */
+.preserve-3d  { transform-style: preserve-3d; }
+.perspective-2000 { perspective: 2000px; }
+
+/* Linhas animadas que conectam o phone ao browser no hero */
+.beam-path,
+.beam-path-fast {
+  filter: drop-shadow(0 0 3px rgba(122, 217, 183, 0.8));
+  animation: beam-flow 4s linear infinite;
+}
+.beam-path      { stroke-dasharray: 100, 800; stroke-dashoffset: 900; }
+.beam-path-fast { stroke-dasharray:  80, 600; stroke-dashoffset: 680; animation-duration: 3s; }
+
+
+/* --------------------------------------------------------------------------
+   5. Cards — interações dos cards bento de features
+   -------------------------------------------------------------------------- */
+.bento-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+  border-color: rgba(122, 217, 183, 0.30);
+}
+
+.bento-icon-bg {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.bento-card:hover .bento-icon-bg {
+  background-color: var(--menta-50);
+  color: var(--menta-500);
+}
+
+
+/* --------------------------------------------------------------------------
+   6. Patterns — texturas decorativas
+   -------------------------------------------------------------------------- */
+.bg-dots {
+  background-image: radial-gradient(
+    rgba(122, 217, 183, 0.22) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
+
+/* --------------------------------------------------------------------------
+   7. Motion — keyframes
+   -------------------------------------------------------------------------- */
+
+@keyframes stripe-flow {
+  0%   { background-position:   0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position:   0% 50%; }
+}
+
+@keyframes beam-drift {
+  0%   { transform: rotate(-35deg) translateY(0)    translateX(0);   opacity: 0.5; }
+  100% { transform: rotate(-35deg) translateY(-10%) translateX(10%); opacity: 1; }
+}
+
+@keyframes float-blob {
+  0%   { transform: translate(0, 0)        rotate(0deg); }
+  33%  { transform: translate(30px, -50px) rotate(120deg); }
+  66%  { transform: translate(-20px, 20px) rotate(240deg); }
+  100% { transform: translate(0, 0)        rotate(360deg); }
+}
+
+@keyframes beam-flow {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Marquee horizontal contínuo (carrossel de testimonials) */
+@keyframes marquee-ltr {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee {
+  animation: marquee-ltr 60s linear infinite;
+}
+
+/* Pulso ao redor do cadeado de segurança */
+@keyframes lock-pulse {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(61, 125, 102, 0); }
+  50%      { box-shadow: 0 0 0 10px rgba(61, 125, 102, 0.1); }
+}
+
+.lock-glow {
+  animation: lock-pulse 3s infinite;
+}
+
+
+/* --------------------------------------------------------------------------
+   8. Utils
+   -------------------------------------------------------------------------- */
+
+/* Trava o scroll do body quando o menu mobile está aberto */
+.menu-open {
+  overflow: hidden;
+}
+
+/* Respeita preferência do sistema por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
